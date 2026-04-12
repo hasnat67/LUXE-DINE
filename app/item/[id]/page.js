@@ -87,17 +87,30 @@ export default function ItemPage({ params }) {
   useEffect(() => {
     if (isARLaunching && modelViewerRef.current) {
       const mv = modelViewerRef.current;
-      const onProgress = (event) => {
-        if (event.detail.totalProgress === 1) {
-          setArStatus("ready");
-          setTimeout(() => {
+      
+      const onReady = () => {
+        setArStatus("ready");
+        setTimeout(() => {
+          if (mv.activateAR) {
             mv.activateAR();
             setArStatus("launching");
-          }, 500);
+          }
+        }, 800);
+      };
+
+      const handleProgress = (event) => {
+        if (event.detail.totalProgress === 1) {
+          onReady();
         }
       };
-      mv.addEventListener('progress', onProgress);
-      return () => mv.removeEventListener('progress', onProgress);
+
+      mv.addEventListener('progress', handleProgress);
+      mv.addEventListener('load', onReady); // Fallback for cached models
+      
+      return () => {
+        mv.removeEventListener('progress', handleProgress);
+        mv.removeEventListener('load', onReady);
+      };
     }
   }, [isARLaunching]);
 
@@ -289,10 +302,10 @@ export default function ItemPage({ params }) {
           <div className="ar-launcher-content">
             <button className="ar-launcher-close" onClick={() => setIsARLaunching(false)}>✕</button>
             <div className="ar-launcher-status">
-              {arStatus === "initializing" && (
+              {(arStatus === "initializing" || arStatus === "ready") && (
                 <div className="status-box">
                   <div className="mv-spinner" />
-                  <h3>Refining View...</h3>
+                  <h3>{arStatus === "initializing" ? "Refining View..." : "Launching AR..."}</h3>
                 </div>
               )}
             </div>
@@ -303,7 +316,11 @@ export default function ItemPage({ params }) {
               ar-modes="webxr scene-viewer quick-look"
               ar-placement="floor"
               camera-controls
-              style={{ width: '100%', height: '100%', opacity: arStatus === 'launching' ? 0 : 1 }}
+              environment-image="neutral"
+              exposure="1"
+              shadow-intensity="1"
+              auto-rotate
+              style={{ width: '100%', height: '100%' }}
             >
               <button slot="ar-button" style={{ display: 'none' }}></button>
             </model-viewer>
