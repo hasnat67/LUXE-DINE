@@ -20,21 +20,26 @@ export default function MenuPage() {
   const [isSticky, setIsSticky] = useState(false);
   const categoryScrollRef = useRef(null);
   const headerRef = useRef(null);
+  const sentinelRef = useRef(null);
 
-  // Detect sticky state for compact header
+  // Detect sticky state for compact header using IntersectionObserver
   useEffect(() => {
-    const handleScroll = () => {
-      // Threshold: Scroll position where header becomes sticky. 
-      // Typically at the bottom of the hero section (approx 150px-200px)
-      if (window.scrollY > 120) {
-        setIsSticky(true);
-      } else {
-        setIsSticky(false);
-      }
-    };
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // When the sentinel is NOT intersecting (out of view above the top), make header sticky
+        setIsSticky(!entry.isIntersecting);
+      },
+      { 
+        threshold: 0,
+        rootMargin: '-80px 0px 0px 0px' // Offset by header height
+      }
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -94,6 +99,9 @@ export default function MenuPage() {
             </div>
           </div>
         )}
+
+        {/* Sentinel for sticky header detection */}
+        <div ref={sentinelRef} style={{ height: '1px', marginBottom: '-1px' }} />
 
         {/* Sticky Header Section (Sticks after hero) */}
         <div 

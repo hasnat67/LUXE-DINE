@@ -5,20 +5,26 @@
 /* Sticky Header Section */
 .menu-header-sticky {
   position: sticky;
-  top: var(--header-height);
+  top: 72px; /* Stable desktop offset */
   z-index: 100;
   background: var(--bg-glass);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border-bottom: var(--glass-border);
-  padding: 16px 0 12px;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 20px 0 16px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+@media (max-width: 768px) {
+  .menu-header-sticky {
+    top: 60px; /* Mobile header height */
+  }
 }
 
 .menu-header-sticky.is-sticky {
-  padding: 12px 0;
-  background: rgba(10, 10, 10, 0.95);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  padding: 14px 0 10px;
+  background: rgba(10, 10, 10, 0.98);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+  border-bottom-color: var(--gold);
 }
 
 [data-theme="light"] .menu-header-sticky {
@@ -34,7 +40,7 @@
 }
 
 .is-sticky .search-row {
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 .search-input-wrapper {
@@ -224,7 +230,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 0 4px;
+  padding: 4px 0 2px;
   animation: compactSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
