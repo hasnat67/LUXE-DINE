@@ -31,8 +31,10 @@ export default function ItemPage({ params }) {
   const [isARLaunching, setIsARLaunching] = useState(false);
   const [showQRModal, setShowQRModal] = useState(false);
   const [arStatus, setArStatus] = useState("initializing"); // initializing, ready, launching
+  const [sparkles, setSparkles] = useState([]);
   
   const modelViewerRef = useRef(null);
+  const animationFrameRef = useRef(null);
   const dispatch = useCartDispatch();
 
   useEffect(() => {
@@ -112,6 +114,100 @@ export default function ItemPage({ params }) {
         mv.removeEventListener('load', onReady);
       };
     }
+  }, [isARLaunching]);
+  
+  // Antigravity Animation Logic
+  useEffect(() => {
+    if (!isARLaunching || !modelViewerRef.current) return;
+    const mv = modelViewerRef.current;
+
+    const handleARStatus = (event) => {
+      if (event.detail.status === 'session-started') {
+        startEntranceAnimation();
+      }
+    };
+
+    const triggerSparkles = () => {
+      const newSparkles = Array.from({ length: 15 }).map((_, i) => ({
+        id: Date.now() + i,
+        left: 50 + (Math.random() - 0.5) * 40,
+        top: 50 + (Math.random() - 0.5) * 40,
+        scale: 0.5 + Math.random()
+      }));
+      setSparkles(newSparkles);
+      setTimeout(() => setSparkles([]), 1500);
+    };
+
+    const startEntranceAnimation = () => {
+      const startTime = performance.now();
+      const duration = 1200; // slightly longer for smoother settle
+
+      const animate = (now) => {
+        const elapsed = now - startTime;
+        const t = Math.min(elapsed / duration, 1);
+
+        if (mv.model && mv.model.scene) {
+          const model = mv.model;
+          const scene = model.scene;
+
+          let currentScale, currentY, currentRot;
+
+          // Follow the requested keyframes (approximated)
+          if (t < 0.4) {
+            // Entrance & Overshoot phase
+            const subT = t / 0.4;
+            currentScale = subT * 1.15;
+            currentY = -0.3 + (subT * 0.35); // Moves from -0.3 to +0.05
+            currentRot = subT * Math.PI; // 0 to 180deg
+            
+            // Trigger sparkles near peak
+            if (t > 0.35 && t < 0.38 && sparkles.length === 0) {
+              triggerSparkles();
+            }
+          } else if (t < 0.7) {
+            // Settle phase 1
+            const subT = (t - 0.4) / 0.3;
+            currentScale = 1.15 - (subT * 0.2); // Settle to 0.95
+            currentY = 0.05 - (subT * 0.06); // Settle to -0.01
+            currentRot = Math.PI + (subT * Math.PI * 0.83); // 180 to 330deg
+          } else {
+            // Final Settle phase
+            const subT = (t - 0.7) / 0.3;
+            currentScale = 0.95 + (subT * 0.05); // Settle to 1
+            currentY = -0.01 + (subT * 0.01); // Settle to 0
+            currentRot = (Math.PI * 1.83) + (subT * Math.PI * 0.17); // 330 to 360deg
+          }
+
+          model.scale.set(currentScale, currentScale, currentScale);
+          scene.position.y = currentY;
+          scene.rotation.y = currentRot;
+        }
+
+        if (t < 1) {
+          animationFrameRef.current = requestAnimationFrame(animate);
+        } else {
+          startIdleFloat();
+        }
+      };
+      animationFrameRef.current = requestAnimationFrame(animate);
+    };
+
+    const startIdleFloat = () => {
+      const idleAnimate = (now) => {
+        if (mv.model && mv.model.scene) {
+          const bob = Math.sin(now / 1500) * 0.015; // ±1.5cm hover
+          mv.model.scene.position.y = bob;
+        }
+        animationFrameRef.current = requestAnimationFrame(idleAnimate);
+      };
+      animationFrameRef.current = requestAnimationFrame(idleAnimate);
+    };
+
+    mv.addEventListener('ar-status', handleARStatus);
+    return () => {
+      mv.removeEventListener('ar-status', handleARStatus);
+      if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+    };
   }, [isARLaunching]);
 
   if (!item) {
@@ -308,6 +404,18 @@ export default function ItemPage({ params }) {
                   <h3>{arStatus === "initializing" ? "Refining View..." : "Launching AR..."}</h3>
                 </div>
               )}
+              {/* Sparkle Burst Overlay */}
+              {sparkles.map(s => (
+                <div 
+                  key={s.id} 
+                  className="ar-sparkle" 
+                  style={{ 
+                    left: `${s.left}%`, 
+                    top: `${s.top}%`,
+                    transform: `scale(${s.scale})`
+                  }} 
+                />
+              ))}
             </div>
             <model-viewer
               ref={modelViewerRef}

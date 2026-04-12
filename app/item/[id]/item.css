@@ -269,3 +269,36 @@
 /* QR Modal */
 .qr-modal { text-align: center; }
 .qr-container { display: inline-block; padding: 20px; background: #fff; border-radius: 20px; margin: 20px 0; }
+
+/* AR Particle Sparkles */
+.ar-sparkle {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  background: radial-gradient(circle, #ffd700 30%, #b8860b 100%);
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  pointer-events: none;
+  z-index: 20;
+  box-shadow: 0 0 15px #ffd700;
+  animation: sparkle-burst 1.2s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+}
+
+@keyframes sparkle-burst {
+  0% { 
+    opacity: 0; 
+    transform: translate(0, 0) scale(0) rotate(0deg); 
+  }
+  30% { 
+    opacity: 1; 
+    transform: translate(0, 0) scale(1.1) rotate(45deg); 
+  }
+  100% { 
+    opacity: 0; 
+    transform: translate(var(--drift-x, 40px), var(--drift-y, -120px)) scale(0) rotate(180deg); 
+  }
+}
+
+.ar-sparkle:nth-child(4n) { --drift-x: -80px; --drift-y: -150px; }
+.ar-sparkle:nth-child(4n+1) { --drift-x: 90px; --drift-y: -110px; }
+.ar-sparkle:nth-child(4n+2) { --drift-x: -30px; --drift-y: -180px; }
+.ar-sparkle:nth-child(4n+3) { --drift-x: 60px; --drift-y: -140px; }
