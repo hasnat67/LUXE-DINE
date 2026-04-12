@@ -13,11 +13,10 @@ export default function Header({ showBack, backHref = "/menu", title }) {
     <header className="header premium-header">
       <div className="header-inner">
         {showBack ? (
-          <Link href={backHref} className="header-back-refined">
+          <Link href={backHref} className="header-back-refined" aria-label="Go back">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M19 12H5M12 19l-7-7 7-7" />
             </svg>
-            <span className="back-text">{title || "Back"}</span>
           </Link>
         ) : (
           <Link href="/" className="header-logo">
@@ -71,26 +70,14 @@ export default function Header({ showBack, backHref = "/menu", title }) {
           justify-content: space-between;
         }
         .header-back-refined {
-          display: inline-flex !important;
-          align-items: center !important;
-          gap: 8px !important;
-          color: var(--text-primary) !important;
-          font-weight: 700 !important;
-          font-size: 13px !important;
-          text-transform: uppercase !important;
-          letter-spacing: 1.5px !important;
-          line-height: normal !important;
-          text-decoration: none !important;
-        }
-        .header-back-refined svg {
-          display: block !important;
-          flex-shrink: 0;
-          transform: translateY(1px); /* Manual downward adjustment for the arrow */
-        }
-        .back-text {
-          display: inline-block !important;
-          line-height: 1 !important;
-          margin-top: 2px; /* Pull text slightly down if needed, but the svg transform (above) is cleaner */
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          color: var(--text-primary);
+          font-weight: 600;
+          font-size: 14px;
+          text-transform: uppercase;
+          letter-spacing: 1px;
         }
         .utility-btn {
           width: 44px;
