@@ -73,12 +73,21 @@ export default function Header({ showBack, backHref = "/menu", title }) {
         .header-back-refined {
           display: flex;
           align-items: center;
-          gap: 10px;
+          gap: 8px;
           color: var(--text-primary);
           font-weight: 600;
-          font-size: 14px;
+          font-size: 13px;
           text-transform: uppercase;
-          letter-spacing: 1px;
+          letter-spacing: 1.2px;
+          line-height: 1;
+        }
+        .header-back-refined svg {
+          display: block;
+          flex-shrink: 0;
+        }
+        .back-text {
+          display: inline-block;
+          margin-top: 1px; /* Optical correction for uppercase alignment */
         }
         .utility-btn {
           width: 44px;
