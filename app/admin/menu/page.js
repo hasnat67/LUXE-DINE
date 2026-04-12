@@ -4,6 +4,7 @@ import { useMenu } from "@/lib/MenuContext";
 import { useAdmin } from "@/lib/AdminContext";
 import { useState } from "react";
 import Image from "next/image";
+import { supabase } from "@/lib/supabase";
 
 export default function MenuManager() {
   const { items, categories, updateItem, deleteItem, addItem } = useMenu();
@@ -180,12 +181,23 @@ export default function MenuManager() {
     setModelUploading(true);
     setModelFileName(file.name);
     try {
-      const fd = new FormData();
-      fd.append('file', file);
-      const res = await fetch('/api/admin/upload-model', { method: 'POST', body: fd });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error || 'Upload failed');
-      setFormData(prev => ({ ...prev, modelUrl: json.url }));
+      // Unique filename to prevent collisions
+      const fileName = `${Date.now()}-${file.name.replace(/\s+/g, '_')}`;
+      
+      const { data, error } = await supabase.storage
+        .from('models')
+        .upload(fileName, file, {
+          cacheControl: '3600',
+          upsert: false
+        });
+
+      if (error) throw error;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('models')
+        .getPublicUrl(fileName);
+
+      setFormData(prev => ({ ...prev, modelUrl: publicUrl }));
     } catch (err) {
       alert('Model upload failed: ' + err.message);
       setModelFileName('');
