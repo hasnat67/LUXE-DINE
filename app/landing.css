@@ -1,0 +1,243 @@
+/* =============================================
+   Landing Page Styles
+   ============================================= */
+
+.landing {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 0%, rgba(212, 175, 55, 0.03) 0%, transparent 60%),
+    var(--bg-primary);
+}
+
+/* Floating Particles */
+.particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: rgba(212, 175, 55, 0.3);
+  border-radius: 50%;
+  animation: float infinite ease-in-out;
+}
+
+/* Gold accent lines */
+.accent-lines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.accent-line {
+  position: absolute;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.08), transparent);
+  height: 1px;
+}
+
+.accent-line-1 {
+  top: 20%;
+  left: 0;
+  right: 0;
+  animation: fadeIn 2s ease 0.5s forwards;
+  opacity: 0;
+}
+
+.accent-line-2 {
+  bottom: 20%;
+  left: 0;
+  right: 0;
+  animation: fadeIn 2s ease 0.8s forwards;
+  opacity: 0;
+}
+
+/* Content */
+.landing-content {
+  text-align: center;
+  padding: 40px 24px;
+  max-width: 500px;
+  position: relative;
+  z-index: 10;
+  opacity: 1; /* Safety Visibility for Mobile */
+  transform: translateY(0);
+}
+
+.landing-content.visible {
+  opacity: 1;
+  animation: fadeIn 0.8s ease-out;
+}
+
+/* Emblem */
+.emblem {
+  margin: 0 auto 32px;
+}
+
+.emblem-ring {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  animation: pulse 3s infinite;
+  position: relative;
+}
+
+.emblem-ring::before {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 1px solid rgba(212, 175, 55, 0.1);
+}
+
+.emblem-inner {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(212, 175, 55, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+
+/* Title */
+.landing-title {
+  font-size: 52px;
+  font-weight: 800;
+  letter-spacing: 10px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.title-luxe {
+  background: var(--gold-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 56px;
+  line-height: 1;
+}
+
+.title-dine {
+  font-weight: 300;
+  letter-spacing: 18px;
+  font-size: 32px;
+  color: var(--text-secondary);
+  line-height: 1;
+  margin-top: 4px;
+}
+
+.landing-subtitle {
+  font-family: var(--font-heading);
+  font-style: italic;
+  color: var(--text-secondary);
+  font-size: 14px;
+  letter-spacing: 2px;
+  margin-bottom: 36px;
+}
+
+/* Features */
+.landing-features {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.feature-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-md);
+  font-size: 11px;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+  transition: all var(--transition-normal);
+}
+
+@media (hover: hover) {
+  .feature-badge:hover {
+    border-color: rgba(212, 175, 55, 0.3);
+    background: rgba(212, 175, 55, 0.05);
+  }
+}
+
+.feature-icon {
+  font-size: 24px;
+}
+
+/* Description */
+.landing-description {
+  color: var(--text-tertiary);
+  font-size: 14px;
+  line-height: 1.7;
+  margin-bottom: 36px;
+  max-width: 380px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* CTA */
+.landing-cta {
+  margin-bottom: 48px;
+}
+
+/* Footer */
+.landing-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.footer-line {
+  width: 40px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.footer-text {
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .landing-title {
+    font-size: 42px;
+  }
+  .title-luxe {
+    font-size: 46px;
+  }
+  .title-dine {
+    font-size: 24px;
+    letter-spacing: 14px;
+  }
+  .landing-features {
+    gap: 10px;
+  }
+  .feature-badge {
+    padding: 10px 12px;
+    font-size: 10px;
+  }
+}
