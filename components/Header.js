@@ -71,23 +71,26 @@ export default function Header({ showBack, backHref = "/menu", title }) {
           justify-content: space-between;
         }
         .header-back-refined {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          color: var(--text-primary);
-          font-weight: 600;
-          font-size: 13px;
-          text-transform: uppercase;
-          letter-spacing: 1.2px;
-          line-height: 1;
+          display: inline-flex !important;
+          align-items: center !important;
+          gap: 8px !important;
+          color: var(--text-primary) !important;
+          font-weight: 700 !important;
+          font-size: 13px !important;
+          text-transform: uppercase !important;
+          letter-spacing: 1.5px !important;
+          line-height: normal !important;
+          text-decoration: none !important;
         }
         .header-back-refined svg {
-          display: block;
+          display: block !important;
           flex-shrink: 0;
+          transform: translateY(1px); /* Manual downward adjustment for the arrow */
         }
         .back-text {
-          display: inline-block;
-          margin-top: 1px; /* Optical correction for uppercase alignment */
+          display: inline-block !important;
+          line-height: 1 !important;
+          margin-top: 2px; /* Pull text slightly down if needed, but the svg transform (above) is cleaner */
         }
         .utility-btn {
           width: 44px;
