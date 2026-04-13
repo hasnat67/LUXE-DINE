@@ -430,7 +430,7 @@ export default function ItemPage({ params }) {
               loading="eager"
               reveal="auto"
               ar
-              ar-modes="webxr scene-viewer quick-look"
+              ar-modes="webxr quick-look"
               ar-placement="floor"
               ar-scale="fixed"
               scale="0.12 0.12 0.12"
