@@ -147,7 +147,8 @@ export default function ItemPage({ params }) {
 
     const startEntranceAnimation = () => {
       const startTime = performance.now();
-      const duration = 1200; // slightly longer for smoother settle
+      const duration = 1200; 
+      const TARGET_SCALE = 0.6; // Scale down for realistic dish size
 
       const animate = (now) => {
         const elapsed = now - startTime;
@@ -159,30 +160,28 @@ export default function ItemPage({ params }) {
 
           let currentScale, currentY, currentRot;
 
-          // Follow the requested keyframes (approximated)
           if (t < 0.4) {
             // Entrance & Overshoot phase
             const subT = t / 0.4;
-            currentScale = subT * 1.15;
-            currentY = -0.3 + (subT * 0.35); // Moves from -0.3 to +0.05
-            currentRot = subT * Math.PI; // 0 to 180deg
+            currentScale = subT * (TARGET_SCALE * 1.15);
+            currentY = -0.3 + (subT * 0.35); 
+            currentRot = subT * Math.PI; 
             
-            // Trigger sparkles near peak
             if (t > 0.35 && t < 0.38 && sparkles.length === 0) {
               triggerSparkles();
             }
           } else if (t < 0.7) {
             // Settle phase 1
             const subT = (t - 0.4) / 0.3;
-            currentScale = 1.15 - (subT * 0.2); // Settle to 0.95
-            currentY = 0.05 - (subT * 0.06); // Settle to -0.01
-            currentRot = Math.PI + (subT * Math.PI * 0.83); // 180 to 330deg
+            currentScale = (TARGET_SCALE * 1.15) - (subT * (TARGET_SCALE * 0.2)); 
+            currentY = 0.05 - (subT * 0.06); 
+            currentRot = Math.PI + (subT * Math.PI * 0.83); 
           } else {
             // Final Settle phase
             const subT = (t - 0.7) / 0.3;
-            currentScale = 0.95 + (subT * 0.05); // Settle to 1
-            currentY = -0.01 + (subT * 0.01); // Settle to 0
-            currentRot = (Math.PI * 1.83) + (subT * Math.PI * 0.17); // 330 to 360deg
+            currentScale = (TARGET_SCALE * 0.95) + (subT * (TARGET_SCALE * 0.05)); 
+            currentY = -0.01 + (subT * 0.01); 
+            currentRot = (Math.PI * 1.83) + (subT * Math.PI * 0.17); 
           }
 
           model.scale.set(currentScale, currentScale, currentScale);
@@ -433,6 +432,8 @@ export default function ItemPage({ params }) {
               ar
               ar-modes="webxr scene-viewer quick-look"
               ar-placement="floor"
+              ar-scale="fixed"
+              scale="0.6 0.6 0.6"
               camera-controls
               environment-image="neutral"
               exposure="1"
