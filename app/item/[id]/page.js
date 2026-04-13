@@ -13,7 +13,7 @@ import "./item.css";
 
 export default function ItemPage({ params }) {
   const resolvedParams = use(params);
-  const { items } = useMenu();
+  const { items, getItemWithDetails } = useMenu();
   const { settings } = useAdmin();
   const [item, setItem] = useState(null);
   const [quantity, setQuantity] = useState(1);
@@ -41,9 +41,16 @@ export default function ItemPage({ params }) {
     const found = items.find(i => i.id === resolvedParams.id);
     if (found) {
       setItem(found);
-      setCurrentImgIndex(0); // Reset image index on item change
+      setCurrentImgIndex(0); 
+
+      // Hydrate full details (3D model, spin photos) if missing
+      if (!found.modelUrl) {
+        getItemWithDetails(resolvedParams.id).then(fullData => {
+          if (fullData) setItem(fullData);
+        });
+      }
     }
-  }, [resolvedParams.id, items]);
+  }, [resolvedParams.id, items, getItemWithDetails]);
 
   const handleAddToCart = () => {
     if (!item) return;
@@ -420,6 +427,9 @@ export default function ItemPage({ params }) {
             <model-viewer
               ref={modelViewerRef}
               src={item.modelUrl}
+              poster={allImages[0]}
+              loading="eager"
+              reveal="auto"
               ar
               ar-modes="webxr scene-viewer quick-look"
               ar-placement="floor"
@@ -430,6 +440,10 @@ export default function ItemPage({ params }) {
               auto-rotate
               style={{ width: '100%', height: '100%' }}
             >
+              <div slot="poster" className="mv-poster-view">
+                 <Image src={allImages[0]} alt="Refining view..." width={400} height={400} priority className="poster-img" />
+                 <div className="poster-spinner" />
+              </div>
               <button slot="ar-button" style={{ display: 'none' }}></button>
             </model-viewer>
           </div>
