@@ -147,8 +147,7 @@ export default function ItemPage({ params }) {
 
     const startEntranceAnimation = () => {
       const startTime = performance.now();
-      const duration = 1200; 
-      const TARGET_SCALE = 0.12; // Aggressive reduction (approx. 10-15cm wide)
+      const duration = 1200; // slightly longer for smoother settle
 
       const animate = (now) => {
         const elapsed = now - startTime;
@@ -160,12 +159,13 @@ export default function ItemPage({ params }) {
 
           let currentScale, currentY, currentRot;
 
-          if (t < 0.4) {
+          // Follow the requested keyframes (approximated)
+            if (t < 0.4) {
             // Entrance & Overshoot phase
             const subT = t / 0.4;
-            currentScale = subT * (TARGET_SCALE * 1.15);
+            currentScale = subT * 0.6; // Peak at 0.6 instead of 1.15
             currentY = -0.3 + (subT * 0.35); 
-            currentRot = subT * Math.PI; 
+            currentRot = subT * Math.PI;
             
             if (t > 0.35 && t < 0.38 && sparkles.length === 0) {
               triggerSparkles();
@@ -173,15 +173,15 @@ export default function ItemPage({ params }) {
           } else if (t < 0.7) {
             // Settle phase 1
             const subT = (t - 0.4) / 0.3;
-            currentScale = (TARGET_SCALE * 1.15) - (subT * (TARGET_SCALE * 0.2)); 
+            currentScale = 0.6 - (subT * 0.15); // Settle towards 0.45
             currentY = 0.05 - (subT * 0.06); 
-            currentRot = Math.PI + (subT * Math.PI * 0.83); 
+            currentRot = Math.PI + (subT * Math.PI * 0.83);
           } else {
             // Final Settle phase
             const subT = (t - 0.7) / 0.3;
-            currentScale = (TARGET_SCALE * 0.95) + (subT * (TARGET_SCALE * 0.05)); 
+            currentScale = 0.45 + (subT * 0.05); // Final settle at 0.5
             currentY = -0.01 + (subT * 0.01); 
-            currentRot = (Math.PI * 1.83) + (subT * Math.PI * 0.17); 
+            currentRot = (Math.PI * 1.83) + (subT * Math.PI * 0.17);
           }
 
           model.scale.set(currentScale, currentScale, currentScale);
@@ -430,14 +430,10 @@ export default function ItemPage({ params }) {
               loading="eager"
               reveal="auto"
               ar
-              ar-modes="webxr quick-look"
+              ar-modes="webxr scene-viewer quick-look"
               ar-placement="floor"
               ar-scale="fixed"
-              scale="0.12 0.12 0.12"
-              camera-orbit="0deg 75deg 105%"
-              min-camera-orbit="auto auto 50%"
               camera-controls
-              interaction-prompt="none"
               environment-image="neutral"
               exposure="1"
               shadow-intensity="1"
