@@ -107,3 +107,40 @@ ALTER PUBLICATION supabase_realtime ADD TABLE public.menu_items;
 ALTER PUBLICATION supabase_realtime ADD TABLE public.restaurant_tables;
 ALTER PUBLICATION supabase_realtime ADD TABLE public.orders;
 ALTER PUBLICATION supabase_realtime ADD TABLE public.notifications;
+ 
+-- =============================================
+-- PERFORMANCE OPTIMIZATIONS (NEW)
+-- =============================================
+ 
+-- 1. Performance Indexes
+-- Speed up menu filtering and category navigation
+CREATE INDEX IF NOT EXISTS idx_menu_items_category_id ON public.menu_items(category_id);
+-- Speed up "New Arrivals" and default menu sorting
+CREATE INDEX IF NOT EXISTS idx_menu_items_created_at ON public.menu_items(created_at DESC);
+-- Speed up featured items section
+CREATE INDEX IF NOT EXISTS idx_menu_items_featured ON public.menu_items(featured) WHERE featured = true;
+-- Speed up history loading in Admin dashboard
+CREATE INDEX IF NOT EXISTS idx_orders_created_at ON public.orders(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_orders_status ON public.orders(status);
+-- Speed up reading notifications
+CREATE INDEX IF NOT EXISTS idx_notifications_is_read_created_at ON public.notifications(is_read, created_at DESC) WHERE is_read = false;
+ 
+-- 2. Automated Updated At Triggers
+-- Function to handle automated updated_at updates
+CREATE OR REPLACE FUNCTION public.handle_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = now();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+ 
+-- Apply triggers to relevant tables
+DROP TRIGGER IF EXISTS set_updated_at ON public.restaurants;
+CREATE TRIGGER set_updated_at BEFORE UPDATE ON public.restaurants FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+ 
+DROP TRIGGER IF EXISTS set_updated_at ON public.menu_items;
+CREATE TRIGGER set_updated_at BEFORE UPDATE ON public.menu_items FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+ 
+DROP TRIGGER IF EXISTS set_updated_at ON public.orders;
+CREATE TRIGGER set_updated_at BEFORE UPDATE ON public.orders FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
