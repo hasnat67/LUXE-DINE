@@ -148,7 +148,7 @@ export default function ItemPage({ params }) {
     const startEntranceAnimation = () => {
       const startTime = performance.now();
       const duration = 1200; 
-      const TARGET_SCALE = 0.6; // Scale down for realistic dish size
+      const TARGET_SCALE = 0.12; // Aggressive reduction (approx. 10-15cm wide)
 
       const animate = (now) => {
         const elapsed = now - startTime;
@@ -433,8 +433,11 @@ export default function ItemPage({ params }) {
               ar-modes="webxr scene-viewer quick-look"
               ar-placement="floor"
               ar-scale="fixed"
-              scale="0.6 0.6 0.6"
+              scale="0.12 0.12 0.12"
+              camera-orbit="0deg 75deg 105%"
+              min-camera-orbit="auto auto 50%"
               camera-controls
+              interaction-prompt="none"
               environment-image="neutral"
               exposure="1"
               shadow-intensity="1"
