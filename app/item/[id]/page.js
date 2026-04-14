@@ -160,28 +160,29 @@ export default function ItemPage({ params }) {
           let currentScale, currentY, currentRot;
 
           // Follow the requested keyframes (approximated)
-            if (t < 0.4) {
-            // Entrance & Overshoot phase
+          if (t < 0.4) {
+            // Entrance phase (no overshoot to prevent large appearance)
             const subT = t / 0.4;
-            currentScale = subT * 0.6; // Peak at 0.6 instead of 1.15
-            currentY = -0.3 + (subT * 0.35); 
-            currentRot = subT * Math.PI;
+            currentScale = subT * 1.0;
+            currentY = -0.3 + (subT * 0.35); // Moves from -0.3 to +0.05
+            currentRot = subT * Math.PI; // 0 to 180deg
             
+            // Trigger sparkles near peak
             if (t > 0.35 && t < 0.38 && sparkles.length === 0) {
               triggerSparkles();
             }
           } else if (t < 0.7) {
             // Settle phase 1
             const subT = (t - 0.4) / 0.3;
-            currentScale = 0.6 - (subT * 0.15); // Settle towards 0.45
-            currentY = 0.05 - (subT * 0.06); 
-            currentRot = Math.PI + (subT * Math.PI * 0.83);
+            currentScale = 1.0 - (subT * 0.05); // Settle to 0.95
+            currentY = 0.05 - (subT * 0.06); // Settle to -0.01
+            currentRot = Math.PI + (subT * Math.PI * 0.83); // 180 to 330deg
           } else {
             // Final Settle phase
             const subT = (t - 0.7) / 0.3;
-            currentScale = 0.45 + (subT * 0.05); // Final settle at 0.5
-            currentY = -0.01 + (subT * 0.01); 
-            currentRot = (Math.PI * 1.83) + (subT * Math.PI * 0.17);
+            currentScale = 0.95 + (subT * 0.05); // Settle to 1
+            currentY = -0.01 + (subT * 0.01); // Settle to 0
+            currentRot = (Math.PI * 1.83) + (subT * Math.PI * 0.17); // 330 to 360deg
           }
 
           model.scale.set(currentScale, currentScale, currentScale);
@@ -432,7 +433,6 @@ export default function ItemPage({ params }) {
               ar
               ar-modes="webxr scene-viewer quick-look"
               ar-placement="floor"
-              ar-scale="fixed"
               camera-controls
               environment-image="neutral"
               exposure="1"
