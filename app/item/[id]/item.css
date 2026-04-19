@@ -184,6 +184,21 @@
   color: var(--gold);
 }
 
+/* Light Mode Overrides */
+[data-theme="light"] .btn-ar-action {
+  background: #fdfaf3; /* Soft gold tint */
+  border: 1.5px solid rgba(179, 143, 43, 0.12);
+  color: var(--gold);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="light"] .btn-ar-action:hover {
+  background: #fcf2d9;
+  border-color: var(--gold);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(212, 175, 55, 0.1);
+}
+
 /* Footer Link */
 .footer-review-link {
   margin-top: 48px;
