@@ -436,11 +436,15 @@ export default function ItemPage({ params }) {
               ar-scale="fixed"
               scale="0.15 0.15 0.15"
               camera-controls
-              environment-image="neutral"
-              exposure="1"
-              shadow-intensity="1"
               auto-rotate
+              autoplay
+              shadow-intensity="1.5"
+              shadow-softness="0.8"
+              exposure="1.0"
+              environment-image="neutral"
               interaction-prompt="none"
+              interpolation-decay="200"
+              crossorigin="anonymous"
               style={{ width: '100%', height: '100%' }}
             >
               <div slot="poster" className="mv-poster-view">
