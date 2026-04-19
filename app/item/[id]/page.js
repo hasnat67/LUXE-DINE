@@ -123,6 +123,30 @@ export default function ItemPage({ params }) {
     }
   }, [isARLaunching]);
   
+  // Close AR overlay when returning from external AR viewer (Scene Viewer / Quick Look)
+  useEffect(() => {
+    if (!isARLaunching) return;
+
+    let hasLaunchedAR = false;
+
+    // Track when AR actually launches (page goes hidden = external AR app opened)
+    const handleVisibility = () => {
+      if (document.hidden && arStatus === "launching") {
+        hasLaunchedAR = true;
+      }
+      // User came back to the browser from external AR app
+      if (!document.hidden && hasLaunchedAR) {
+        hasLaunchedAR = false;
+        setIsARLaunching(false);
+        setArStatus("initializing");
+        if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => document.removeEventListener('visibilitychange', handleVisibility);
+  }, [isARLaunching, arStatus]);
+
   // Antigravity Animation Logic
   useEffect(() => {
     if (!isARLaunching || !modelViewerRef.current) return;
@@ -131,8 +155,8 @@ export default function ItemPage({ params }) {
     const handleARStatus = (event) => {
       if (event.detail.status === 'session-started') {
         startEntranceAnimation();
-      } else if (event.detail.status === 'not-presenting') {
-        // User exited AR — close the overlay so they return to the item page
+      } else if (event.detail.status === 'not-presenting' || event.detail.status === 'failed') {
+        // User exited AR or AR failed — close the overlay
         setIsARLaunching(false);
         setArStatus("initializing");
         if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
