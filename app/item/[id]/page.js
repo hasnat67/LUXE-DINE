@@ -431,14 +431,16 @@ export default function ItemPage({ params }) {
               loading="eager"
               reveal="auto"
               ar
-              ar-modes="scene-viewer quick-look webxr"
+              ar-modes="webxr scene-viewer quick-look"
               ar-placement="floor"
               ar-scale="fixed"
+              scale="0.15 0.15 0.15"
               camera-controls
               environment-image="neutral"
               exposure="1"
               shadow-intensity="1"
               auto-rotate
+              interaction-prompt="none"
               style={{ width: '100%', height: '100%' }}
             >
               <div slot="poster" className="mv-poster-view">
