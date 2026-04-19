@@ -131,6 +131,11 @@ export default function ItemPage({ params }) {
     const handleARStatus = (event) => {
       if (event.detail.status === 'session-started') {
         startEntranceAnimation();
+      } else if (event.detail.status === 'not-presenting') {
+        // User exited AR — close the overlay so they return to the item page
+        setIsARLaunching(false);
+        setArStatus("initializing");
+        if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
       }
     };
 
