@@ -4,6 +4,7 @@ import { AdminProvider } from "@/lib/AdminContext";
 import { MenuProvider } from "@/lib/MenuContext";
 import { OrderProvider } from "@/lib/OrderContext";
 import CallWaiterFAB from "@/components/CallWaiterFAB";
+import AriaChatbot from "@/components/AriaChatbot";
 
 export const metadata = {
   title: "LUXE DINE | AR Restaurant Menu",
@@ -29,6 +30,10 @@ export default function RootLayout({ children }) {
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://ajax.googleapis.com" />
+        
+        <script dangerouslySetInnerHTML={{
+          __html: `const ARIA_WEBHOOK = 'https://hook.eu1.make.com/hutrlheeeeb0kb1ducxx9jcyuwarx6x4';`
+        }} />
       </head>
       <body suppressHydrationWarning>
         <AdminProvider>
@@ -37,6 +42,7 @@ export default function RootLayout({ children }) {
               <CartProvider>
                 {children}
                 <CallWaiterFAB />
+                <AriaChatbot />
               </CartProvider>
             </OrderProvider>
           </MenuProvider>
